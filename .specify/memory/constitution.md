@@ -1,55 +1,64 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report:
+- Version change: none → 1.0.0
+- List of modified principles:
+  - Rule 1 — Spec First, Always
+  - Rule 2 — No Unsolicited Additions
+  - Rule 3 — AI Builds, Humans Architect
+  - Rule 4 — When in Doubt, Stop and Ask
+  - Rule 5 — Professional Grade Only
+  - Rule 6 — One Phase at a Time
+  - Rule 7 — Clean Code is Non-Negotiable
+  - Rule 8 — Constitution Governs All
+- Added sections: Core Principles, Governance
+- Removed sections: none
+- Templates requiring updates:
+  - .specify/templates/plan-template.md (✅ updated)
+  - .specify/templates/spec-template.md (✅ updated)
+  - .specify/templates/tasks-template.md (✅ updated)
+- Follow-up TODOs: none
+-->
+
+# The Evolution of Todo — Hackathon II Constitution
+
+> **Purpose:** Define the governing principles for every AI agent and developer working on this project, ensuring all specifications, implementations, and deliverables stay consistent and professional.
+
+---
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### Rule 1 — Spec First, Always
+No implementation begins without an approved specification. If it is not in the spec, it does not get built.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### Rule 2 — No Unsolicited Additions
+Do not add features, libraries, fields, or behaviors that are not explicitly requested. Good intentions do not override this rule.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### Rule 3 — AI Builds, Humans Architect
+No manual boilerplate coding. Humans define what to build via specs. AI implements. Humans review and approve.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### Rule 4 — When in Doubt, Stop and Ask
+If a requirement is unclear or ambiguous, stop immediately and request clarification. Never assume. Never guess.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### Rule 5 — Professional Grade Only
+Every file, function, and artifact must meet the standard of work submitted to a senior engineering review. No shortcuts.
 
-### [PRINCIPLE_6_NAME]
+### Rule 6 — One Phase at a Time
+Work only within the scope of the active phase. Do not implement future phase features early, even if they seem logical.
 
+### Rule 7 — Clean Code is Non-Negotiable
+Type hints, docstrings, meaningful naming, and proper project structure are required at all times — not optional.
 
-[PRINCIPLE__DESCRIPTION]
+### Rule 8 — Constitution Governs All
+If any spec, instruction, or decision conflicts with this constitution, the constitution wins. Update the constitution first, then the specs.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
-
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+---
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+### Amendment Procedure
+Amendments to this constitution require a version bump and updated documentation. All dependent specifications and plans must be reviewed for compliance after an amendment.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+### Compliance Review
+All Pull Requests, design documents (Specs/Plans), and generated code must be verified against these principles. Any deviation is a violation of project standards.
+
+**Version**: 1.0.0 | **Ratified**: 2026-03-11 | **Last Amended**: 2026-03-11
