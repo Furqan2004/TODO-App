@@ -3,34 +3,37 @@
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { Toast, useToast } from "@/components/Toast";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [error, setError] = useState("");
+  const { toast, showToast, hideToast } = useToast();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await authClient.signUp.email({
+      const { error } = await authClient.signUp.email({
         email,
         password,
         name,
       });
-      router.push("/dashboard");
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message || "Signup failed");
-      } else {
-        setError("Signup failed");
+      if (error) {
+        showToast(error.message || "Signup failed", "error");
+        return;
       }
+      showToast("Account created successfully!", "success");
+      setTimeout(() => router.push("/dashboard"), 1000);
+    } catch (err: unknown) {
+      showToast("An unexpected error occurred", "error");
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-50">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
       <h1 className="text-4xl font-bold mb-8 text-blue-600">Sign Up</h1>
       <form onSubmit={handleSubmit} className="w-full max-w-xs bg-white p-6 rounded-lg shadow-md border border-gray-200">
         <div className="mb-4">
@@ -66,7 +69,6 @@ export default function SignupPage() {
             required
           />
         </div>
-        {error && <p className="text-red-500 mb-4 text-sm font-medium">{error}</p>}
         <button
           type="submit"
           className="bg-blue-500 text-white p-2 rounded w-full font-bold hover:bg-blue-600 transition-colors"
