@@ -1,13 +1,21 @@
 [project]
-name = "todo-cli"
+name = "todo-web-backend"
 version = "0.1.0"
-description = "A simple CLI todo application with in-memory storage"
+description = "FastAPI backend for multi-user Todo application"
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = ["pytest"]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "sqlmodel",
+    "psycopg2-binary",
+    "python-jose[cryptography]",
+    "python-dotenv",
+    "pytest",
+]
 
 [project.scripts]
-todo = "todo.main:run"
+todo-api = "todo.main:app"
 
 [build-system]
 requires = ["hatchling"]
@@ -19,4 +27,3 @@ testpaths = ["../tests"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/todo"]
-

@@ -1,38 +1,28 @@
-import sys
-from . import cli
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from sqlmodel import SQLModel
+from .database import engine
+from .routes import tasks
+# Import models to ensure they are registered with SQLModel
+from .models import user, task 
 
-def run() -> None:
-    """
-    Starts the main CLI loop.
-    """
-    print("Welcome to the Todo CLI App!")
-    print("Available commands: add, list, update, delete, complete, exit")
-    
-    while True:
-        try:
-            command = input("\ntodo> ").strip().lower()
-            
-            if command == "add":
-                cli.handle_add()
-            elif command == "list":
-                cli.handle_list()
-            elif command == "complete":
-                cli.handle_complete()
-            elif command == "delete":
-                cli.handle_delete()
-            elif command == "update":
-                cli.handle_update()
-            elif command == "exit":
-                print("Goodbye!")
-                sys.exit(0)
-            elif not command:
-                continue
-            else:
-                print(f"Unknown command: '{command}'. Type 'add', 'list', or 'exit'.")
-                
-        except (KeyboardInterrupt, EOFError):
-            print("\nGoodbye!")
-            sys.exit(0)
+app = FastAPI(title="Todo Web API")
 
-if __name__ == "__main__":
-    run()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.on_event("startup")
+def on_startup():
+    # This creates all tables if they don't exist
+    SQLModel.metadata.create_all(engine)
+
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the Todo Web API"}
+
+app.include_router(tasks.router, prefix="/api")
