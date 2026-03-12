@@ -1,0 +1,17 @@
+# Backend
+backend/__pycache__/
+backend/*.py[cod]
+backend/.venv/
+backend/venv/
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# General
+.git/
+.gitignore
+.dockerignore
+*.log
+.env*

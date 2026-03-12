@@ -1,0 +1,81 @@
+"use client";
+
+import { useState } from "react";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { Toast, useToast } from "@/components/Toast";
+
+export default function SignupPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const { toast, showToast, hideToast } = useToast();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const { error } = await authClient.signUp.email({
+        email,
+        password,
+        name,
+      });
+      if (error) {
+        showToast(error.message || "Signup failed", "error");
+        return;
+      }
+      showToast("Account created successfully!", "success");
+      setTimeout(() => router.push("/dashboard"), 1000);
+    } catch (err: unknown) {
+      showToast("An unexpected error occurred", "error");
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-50">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={hideToast} />}
+      <h1 className="text-4xl font-bold mb-8 text-blue-600">Sign Up</h1>
+      <form onSubmit={handleSubmit} className="w-full max-w-xs bg-white p-6 rounded-lg shadow-md border border-gray-200">
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="p-2 border border-gray-300 rounded w-full bg-white text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="p-2 border border-gray-300 rounded w-full bg-white text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+        <div className="mb-6">
+          <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="p-2 border border-gray-300 rounded w-full bg-white text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white p-2 rounded w-full font-bold hover:bg-blue-600 transition-colors"
+        >
+          Sign Up
+        </button>
+      </form>
+    </div>
+  );
+}

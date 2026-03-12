@@ -212,6 +212,8 @@ See `.specify/memory/constitution.md` for code quality, testing, performance, se
 ## Active Technologies
 - Python 3.13+ + Python Standard Library (dataclasses, typing, sys) (001-cli-todo-app)
 - In-memory (Python list/dict) (001-cli-todo-app)
+- Python 3.12+, TypeScript (Node 20+) + FastAPI, SQLModel, Better Auth, Next.js 16, TailwindCSS, psycopg2-binary, python-jose (002-web-todo-app)
+- Neon Serverless PostgreSQL (002-web-todo-app)
 
 ## Recent Changes
 - 001-cli-todo-app: Added Python 3.13+ + Python Standard Library (dataclasses, typing, sys)
