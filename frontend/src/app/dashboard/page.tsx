@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { getTasks, createTask, updateTask, deleteTask, toggleTask } from "@/lib/api";
 import { TaskCard } from "@/components/TaskCard";
 import { TaskForm } from "@/components/TaskForm";
@@ -12,27 +12,34 @@ import { ConfirmModal } from "@/components/ConfirmModal";
 
 export default function DashboardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { toast, showToast, hideToast } = useToast();
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<number | null>(null);
   const router = useRouter();
+  
+  const hasInitialFetched = useRef(false);
+  const isFetchingRef = useRef(false);
 
   const { data: session, isPending } = authClient.useSession();
 
-  const fetchTasks = useCallback(async () => {
-    if (!session?.user) return;
+  const fetchTasks = useCallback(async (userId: string) => {
+    if (isFetchingRef.current) return;
     
     try {
+      isFetchingRef.current = true;
+      setLoading(true);
+      
       const tokenRes = await authClient.token();
       if (tokenRes.error || !tokenRes.data?.token) {
         showToast("Could not retrieve auth token", "error");
         return;
       }
       
-      const data = await getTasks(session.user.id, tokenRes.data.token);
+      const data = await getTasks(userId, tokenRes.data.token);
       setTasks(data);
+      hasInitialFetched.current = true;
     } catch (err: unknown) {
       if (err instanceof Error) {
         showToast(err.message, "error");
@@ -41,16 +48,21 @@ export default function DashboardPage() {
       }
     } finally {
       setLoading(false);
+      isFetchingRef.current = false;
     }
-  }, [session, showToast]);
+  }, [showToast]);
 
+  // Handle initial fetch and auth redirect
   useEffect(() => {
-    if (!isPending && !session) {
+    if (isPending) return;
+
+    if (!session) {
       router.push("/signin");
       return;
     }
-    if (session) {
-      fetchTasks();
+
+    if (!hasInitialFetched.current && !isFetchingRef.current) {
+      fetchTasks(session.user.id);
     }
   }, [session, isPending, fetchTasks, router]);
 
@@ -60,7 +72,7 @@ export default function DashboardPage() {
       const tokenRes = await authClient.token();
       await createTask(session.user.id, tokenRes.data?.token || "", data);
       showToast("Task created successfully!", "success");
-      fetchTasks();
+      fetchTasks(session.user.id);
       setShowForm(false);
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -75,7 +87,7 @@ export default function DashboardPage() {
       const tokenRes = await authClient.token();
       await updateTask(session.user.id, tokenRes.data?.token || "", editingTask.id, data);
       showToast("Task updated successfully!", "success");
-      fetchTasks();
+      fetchTasks(session.user.id);
       setEditingTask(null);
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -90,7 +102,7 @@ export default function DashboardPage() {
       const tokenRes = await authClient.token();
       await deleteTask(session.user.id, tokenRes.data?.token || "", taskToDelete);
       showToast("Task deleted", "info");
-      fetchTasks();
+      fetchTasks(session.user.id);
     } catch (err: unknown) {
       if (err instanceof Error) {
         showToast(err.message, "error");
@@ -105,7 +117,7 @@ export default function DashboardPage() {
     try {
       const tokenRes = await authClient.token();
       await toggleTask(session.user.id, tokenRes.data?.token || "", id);
-      fetchTasks();
+      fetchTasks(session.user.id);
     } catch (err: unknown) {
       if (err instanceof Error) {
         showToast(err.message, "error");
@@ -113,7 +125,9 @@ export default function DashboardPage() {
     }
   };
 
-  if (isPending || (loading && session)) return <div className="p-8 bg-gray-50 min-h-screen text-gray-800">Loading dashboard...</div>;
+  if (isPending) return <div className="p-8 bg-gray-50 min-h-screen text-gray-800">Loading session...</div>;
+  
+  if (!session && !isPending) return null; // Will redirect in useEffect
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -169,7 +183,9 @@ export default function DashboardPage() {
         )}
 
         <div className="space-y-4">
-          {tasks.length === 0 ? (
+          {loading && tasks.length === 0 ? (
+             <div className="text-center py-12">Loading tasks...</div>
+          ) : tasks.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-lg border border-dashed border-gray-300">
               <p className="text-gray-500 text-lg">No tasks yet. Click "+ New Task" to get started!</p>
             </div>
@@ -183,6 +199,9 @@ export default function DashboardPage() {
                 onEdit={setEditingTask}
               />
             ))
+          )}
+          {loading && tasks.length > 0 && (
+            <div className="text-center py-4 text-gray-500 animate-pulse">Refreshing tasks...</div>
           )}
         </div>
       </div>
